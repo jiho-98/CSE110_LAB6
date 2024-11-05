@@ -1,11 +1,20 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
-// Function to get the budget
-export function getBudget(res: Response, budget: number) {
+let budget = { amount: 1000 };
+
+export function getBudget(res: Response) {
     res.status(200).send({ "data": budget });
 }
 
-// Function to update the budget
-export function updateBudget(res: Response, body: any, budget: { amount: number }) {
-    // TO DO: Implement updateBudget function
+export function updateBudget(req: Request, res: Response) {
+    console.log("Received PUT request with body:", req.body);
+    const { amount } = req.body;
+    
+    if (amount === undefined || typeof amount !== 'number') {
+        return res.status(400).send({ error: "Please provide a valid budget amount." });
+    }
+    
+    budget.amount = amount;
+    console.log(`Budget updated to: ${budget.amount}`); 
+    res.status(200).send({ message: "Budget updated successfully.", budget });
 }

@@ -1,6 +1,7 @@
 import { Expense } from "../types";
 import { Request, Response } from "express";
 
+// Create a new expense in the server
 export function createExpenseServer(req: Request, res: Response, expenses: Expense[]) {
     const { id, cost, description } = req.body;
 
@@ -18,10 +19,19 @@ export function createExpenseServer(req: Request, res: Response, expenses: Expen
     res.status(201).send(newExpense);
 }
 
+// Delete an expense in the server
 export function deleteExpense(req: Request, res: Response, expenses: Expense[]) {
-    // TO DO: Implement deleteExpense function
+    const { id } = req.params;
+    const expenseIndex = expenses.findIndex(expense => expense.id === id);
+
+    if (expenseIndex === -1) {
+        return res.status(404).send({ error: "Expense not found" });
+    }
+    expenses.splice(expenseIndex, 1);
+    res.status(200).send({ message: "Expense deleted successfully" });
 }
 
+// Get all expenses in the server
 export function getExpenses(req: Request, res: Response, expenses: Expense[]) {
     res.status(200).send({ "data": expenses });
 }

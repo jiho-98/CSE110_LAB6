@@ -1,25 +1,26 @@
-import { Request, Response } from "express";
-import { expenses } from "./constants";
+import express, { Request, Response } from "express";
+import cors from "cors";
 import { createExpenseEndpoints } from "./expenses/expense-endpoints";
-
-const express = require("express");
-const cors = require("cors");
+import { expenses as defaultExpenses, budget as defaultBudget } from "./constants"; 
+import { createBudgetEndpoints } from "./budget/budget-endpoints"; 
+import { Expense } from './types';
 
 const app = express();
 const port = 8080;
 
+let expenses: Expense[] = [...defaultExpenses];
+let budget = { ...defaultBudget };
+
 app.use(cors());
 app.use(express.json());
 
-// Start the server
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
 
-// Root endpoint to get test if the server is running
 app.get("/", (req: Request, res: Response) => {
-  res.send({ "data": "Hello, TypeScript Express!" });
-  res.status(200);
+  res.status(200).send({ "data": "Hello, TypeScript Express!" });
 });
 
-createExpenseEndpoints(app, expenses);
+createExpenseEndpoints(app, expenses, budget);
+createBudgetEndpoints(app);
