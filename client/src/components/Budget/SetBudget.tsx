@@ -1,13 +1,13 @@
 import React, { useState, useContext } from "react";
-import { AppContext } from "../../context/AppContext";  // 경로 수정
+import { AppContext } from "../../context/AppContext";  
 
 const SetBudget = () => {
   const { budget, setBudget } = useContext(AppContext);
-  const [newBudget, setNewBudget] = useState<string>("");  // 초기값을 빈 문자열로 설정
+  const [newBudget, setNewBudget] = useState<string>("");  
 
   const handleBudgetChange = () => {
-    const budgetValue = Number(newBudget);  // 문자열을 숫자로 변환
-    if (!isNaN(budgetValue) && newBudget !== "") {  // 입력 값이 숫자일 때만 처리
+    const budgetValue = Number(newBudget);  
+    if (!isNaN(budgetValue) && newBudget !== "") {  
       setBudget(budgetValue);
     }
   };
@@ -20,7 +20,7 @@ const SetBudget = () => {
           type="number"
           className="form-control"
           value={newBudget}
-          onChange={(e) => setNewBudget(e.target.value)}  // 문자열로 처리
+          onChange={(e) => setNewBudget(e.target.value)}  
           placeholder="Enter your budget"
         />
         <button className="btn btn-primary" onClick={handleBudgetChange}>

@@ -1,38 +1,44 @@
 import React, { useState, useContext } from "react";
 import { AppContext } from "../../context/AppContext";
-
+import { createExpense } from "../../utils/expense-utils";
+import { Expense } from "../../types/types";
 
 const AddExpenseForm = () => {
   const { expenses, setExpenses } = useContext(AppContext);
-  const [name, setName] = useState('');
+  const [description, setDescription] = useState(''); 
   const [cost, setCost] = useState('');
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const newExpense = {
-      id: (expenses.length + 1).toString(), // Convert the number to a string
-      name,
+    const newExpense: Expense = {
+      id: (expenses.length + 1).toString(),
+      description, 
       cost: parseInt(cost),
     };
-    
-    setExpenses([...expenses, newExpense]);
-    setName('');
-    setCost('');
+
+    try {
+      const savedExpense = await createExpense(newExpense); 
+      setExpenses([...expenses, savedExpense]);
+      setDescription('');
+      setCost('');
+    } catch (error) {
+      console.error("Failed to create expense:", error);
+    }
   };
 
   return (
     <form onSubmit={onSubmit}>
       <div className="row">
         <div className="col-sm">
-          <label htmlFor="name">Name</label>
+          <label htmlFor="description">Description</label>
           <input
             required
             type="text"
             className="form-control"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
           />
         </div>
         <div className="col-sm">
