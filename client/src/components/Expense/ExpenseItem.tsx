@@ -4,7 +4,7 @@ import { Expense } from "../../types/types";
 
 interface ExpenseItemProps {
   currentExpense: Expense;
-  onDelete: () => void; // onDelete prop 추가
+  onDelete: () => void; 
 }
 
 const ExpenseItem: React.FC<ExpenseItemProps> = ({ currentExpense, onDelete }) => {

@@ -1,8 +1,15 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/AppContext";
 
 const Remaining = () => {
-  const { expenses, budget } = useContext(AppContext);  // budget 추가
+  const { expenses = [], budget = 0 } = useContext(AppContext);  
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (expenses.length > 0) {
+      setIsLoading(false);
+    }
+  }, [expenses]);
 
   const totalExpenses = expenses.reduce((total, item) => {
     return total + item.cost;
@@ -17,6 +24,10 @@ const Remaining = () => {
       alert("You have exceeded your budget!");
     }
   }, [remainingBalance]);
+
+  if (isLoading) {
+    return <div>Loading expenses...</div>;
+  }
 
   return (
     <div className={`alert ${alertType}`}>

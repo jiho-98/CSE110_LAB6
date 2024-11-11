@@ -4,7 +4,7 @@ import { createExpense } from "../../utils/expense-utils";
 import { Expense } from "../../types/types";
 
 const AddExpenseForm = () => {
-  const { expenses, setExpenses } = useContext(AppContext);
+  const { expenses = [], setExpenses } = useContext(AppContext); 
   const [description, setDescription] = useState(''); 
   const [cost, setCost] = useState('');
 

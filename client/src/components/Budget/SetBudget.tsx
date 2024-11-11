@@ -1,14 +1,21 @@
 import React, { useState, useContext } from "react";
-import { AppContext } from "../../context/AppContext";  
+import { AppContext } from "../../context/AppContext";
+import { updateBudget } from "../../utils/budget-utils"; 
 
 const SetBudget = () => {
   const { budget, setBudget } = useContext(AppContext);
-  const [newBudget, setNewBudget] = useState<string>("");  
+  const [newBudget, setNewBudget] = useState<string>("");
 
-  const handleBudgetChange = () => {
-    const budgetValue = Number(newBudget);  
-    if (!isNaN(budgetValue) && newBudget !== "") {  
-      setBudget(budgetValue);
+  const handleBudgetChange = async () => {
+    const budgetValue = Number(newBudget);
+    if (!isNaN(budgetValue) && newBudget !== "") {
+      try {
+        await updateBudget(budgetValue); 
+        setBudget(budgetValue); 
+        setNewBudget(''); 
+      } catch (error) {
+        console.error("Failed to update budget:", error);
+      }
     }
   };
 
@@ -20,7 +27,7 @@ const SetBudget = () => {
           type="number"
           className="form-control"
           value={newBudget}
-          onChange={(e) => setNewBudget(e.target.value)}  
+          onChange={(e) => setNewBudget(e.target.value)}
           placeholder="Enter your budget"
         />
         <button className="btn btn-primary" onClick={handleBudgetChange}>

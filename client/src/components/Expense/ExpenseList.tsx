@@ -1,11 +1,12 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import ExpenseItem from "./ExpenseItem";
 import { AppContext } from "../../context/AppContext";
 import { Expense } from "../../types/types";
 import { fetchExpenses, deleteExpense } from "../../utils/expense-utils"; 
 
 const ExpenseList = () => {
-  const { expenses, setExpenses } = useContext(AppContext); 
+  const { expenses = [], setExpenses } = useContext(AppContext); 
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
     loadExpenses();
@@ -17,9 +18,10 @@ const ExpenseList = () => {
       setExpenses(expenseList);
     } catch (err: any) {
       console.error("Error loading expenses:", err.message);
+    } finally {
+      setLoading(false); 
     }
   };
-
 
   const handleDelete = async (id: string) => {
     try {
@@ -32,13 +34,19 @@ const ExpenseList = () => {
 
   return (
     <ul className="list-group">
-      {expenses.map((expense: Expense) => (
-        <ExpenseItem
-          key={expense.id}
-          currentExpense={expense} 
-          onDelete={() => handleDelete(expense.id)} 
-        />
-      ))}
+      {loading ? ( 
+        <p>Loading expenses...</p>
+      ) : expenses.length === 0 ? ( 
+        <p>No expenses to show.</p> 
+      ) : ( 
+        expenses.map((expense: Expense) => (
+          <ExpenseItem
+            key={expense.id}
+            currentExpense={expense} 
+            onDelete={() => handleDelete(expense.id)} 
+          />
+        ))
+      )}
     </ul>
   );
 };

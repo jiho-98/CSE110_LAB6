@@ -30,15 +30,11 @@ export const deleteExpense = async (id: string): Promise<void> => {
 export const fetchExpenses = async (): Promise<Expense[]> => {
 	const response = await fetch(`${API_BASE_URL}/expenses`);
 	if (!response.ok) {
-    	throw new Error('Failed to fetch expenses');
+	  throw new Error("Failed to fetch expenses");
 	}
-
-	// Parsing the response to get the data
-	let expenseList = response.json().then((jsonResponse) => {
-    	console.log("data in fetchExpenses", jsonResponse);
-    	return jsonResponse.data;
-	});
-
-	console.log("response in fetchExpenses", expenseList);
-	return expenseList;
-};
+  
+	const expenseList = await response.json(); 
+	console.log("data in fetchExpenses", expenseList); 
+  
+	return expenseList; 
+  };

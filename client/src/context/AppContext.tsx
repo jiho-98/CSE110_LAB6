@@ -1,41 +1,57 @@
-import { createContext, useState } from "react";
+import React, { createContext, useState, useEffect, ReactNode } from "react";
 import { Expense } from "../types/types";
-import React from 'react';
-
-
-
-// Exercise: Create add budget to the context
+import { fetchExpenses } from "../utils/expense-utils"; 
 
 interface AppContextType {
   expenses: Expense[];
   setExpenses: React.Dispatch<React.SetStateAction<Expense[]>>;
-  budget: number;  
-  setBudget: React.Dispatch<React.SetStateAction<number>>;  
+  budget: number;
+  setBudget: React.Dispatch<React.SetStateAction<number>>;
+}
+
+interface AppProviderProps {
+  children: ReactNode; 
 }
 
 const initialState: AppContextType = {
   expenses: [],
   setExpenses: () => {},
-  budget: 1000,  
+  budget: 1000,
   setBudget: () => {},
 };
 
 export const AppContext = createContext<AppContextType>(initialState);
 
-export const AppProvider = (props: any) => {
+export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [expenses, setExpenses] = useState<Expense[]>(initialState.expenses);
-  const [budget, setBudget] = useState<number>(initialState.budget);  
+  const [budget, setBudget] = useState<number>(initialState.budget);
+  const [loading, setLoading] = useState(true); 
+
+  useEffect(() => {
+    const loadExpenses = async () => {
+      try {
+        const expenseList = await fetchExpenses();
+        setExpenses(expenseList);
+      } catch (error) {
+        console.error("Failed to load expenses:", error);
+      } finally {
+        setLoading(false); 
+      }
+    };
+
+    loadExpenses();
+  }, []);
 
   return (
     <AppContext.Provider
       value={{
-        expenses: expenses,
-        setExpenses: setExpenses,
-        budget: budget,
-        setBudget: setBudget
+        expenses,
+        setExpenses,
+        budget,
+        setBudget,
       }}
     >
-      {props.children}
+      {loading ? <p>Loading expenses...</p> : children}
     </AppContext.Provider>
   );
 };

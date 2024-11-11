@@ -16,8 +16,9 @@ export const fetchBudget = async (): Promise<number> => {
     }
     
     const data = await response.json();
-    return data.data.amount;
+    return data.amount; 
 };
+
 
 export const updateBudget = async (newAmount: number): Promise<void> => {
     const response = await fetch(`${API_BASE_URL}/budget`, {
